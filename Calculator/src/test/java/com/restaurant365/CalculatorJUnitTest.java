@@ -4,6 +4,7 @@
  */
 package com.restaurant365;
 
+import com.restaurant365.util.CalculatorException;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import static org.junit.jupiter.api.Assertions.*;
@@ -42,7 +43,7 @@ public class CalculatorJUnitTest {
     //first requirement
     @Test
     public void firstTest() {
-//        try {
+        try {
             //20 will return 20
             assertEquals(20, Calculator.processCalculator("20"));
 
@@ -62,29 +63,41 @@ public class CalculatorJUnitTest {
             //Support a maximum of 2 numbers
             Calculator.processCalculator("1,2,3");
             fail("Not throw CalculatorException as expected");
-//        } catch (CalculatorException calExc) {
-//            //Throw an exception when more than 2 numbers are provided
-//            assertEquals("Error occurred: maximum of numbers must be 2.", calExc.getMessage());
-//        }
+        } catch (CalculatorException calExc) {
+            //Throw an exception when more than 2 numbers are provided
+            assertEquals("Error occurred: maximum of numbers must be 2.", calExc.getMessage());
+        }
     }
 
     //second requirement
     @Test
     public void secondTest() {
-//        try {
+        try {
             //1,2,3,4,5,6,7,8,9,10,11,12 will return 78
             assertEquals(78, Calculator.processCalculator("1,2,3,4,5,6,7,8,9,10,11,12"));
-//        } catch (CalculatorException calExc) {
-//        }
+        } catch (CalculatorException calExc) {
+        }
     }
 
     //third requirement
     @Test
     public void thirdTest() {
-//        try {
+        try {
             //1\n2,3 will return 6
             assertEquals(6, Calculator.processCalculator("1\n2,3"));
-//        } catch (CalculatorException calExc) {
-//        }
+        } catch (CalculatorException calExc) {
+        }
+    }
+
+    //fourth requirement
+    @Test
+    public void fourthTest() {
+        try {
+            //Deny negative numbers by throwing an exception that includes all of the negative numbers provided
+            Calculator.processCalculator("1,-2,3,5,-9");
+            fail("Not throw CalculatorException as expected");
+        } catch (CalculatorException calExc) {
+            assertEquals("[-2, -9] Error occurred: negative numbers are not accepted.", calExc.getMessage());
+        }
     }
 }

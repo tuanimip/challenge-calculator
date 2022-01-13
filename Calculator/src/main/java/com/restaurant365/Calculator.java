@@ -4,6 +4,7 @@
  */
 package com.restaurant365;
 
+import com.restaurant365.util.CalculatorException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -32,15 +33,15 @@ public class Calculator {
                 String input = scanner.next();
                 if (!input.equalsIgnoreCase("exit")) {
                     if (input.equalsIgnoreCase("run")) {
-//                        try {
-                        if (!inputAll.isEmpty()) {
-                            inputAll = inputAll.substring(0, inputAll.length() - 1);
+                        try {
+                            if (!inputAll.isEmpty()) {
+                                inputAll = inputAll.substring(0, inputAll.length() - 1);
+                            }
+                            int result = processCalculator(inputAll);
+                            System.out.println("Output: " + result);
+                        } catch (CalculatorException calExc) {
+                            System.out.println(calExc.getMessage());
                         }
-                        int result = processCalculator(inputAll);
-                        System.out.println("Output: " + result);
-//                        } catch (CalculatorException calExc) {
-//                            System.out.println(calExc.getMessage());
-//                        }
                         System.out.println("-------\nInput: ");
                         inputAll = "";
                     } else {
@@ -57,23 +58,31 @@ public class Calculator {
         scanner.close();
     }
 
-    public static int processCalculator(String input) /*throws CalculatorException*/ {
+    public static int processCalculator(String input) throws CalculatorException {
         input = input.replaceAll("\n", ",");
         String[] params = input.split(",", -1);
 
         int result = 0;
         List<Integer> numbers = new ArrayList<>();
+        List<Integer> nagativeNumbers = new ArrayList<>();
         if (params.length > 0) {
             for (String e : params) {
                 if (!e.isEmpty()) {
                     try {
                         int number = Integer.parseInt(e);
-                        numbers.add(number);
+                        if (number < 0) {
+                            nagativeNumbers.add(number);
+                        } else {
+                            numbers.add(number);
+                        }
                     } catch (NumberFormatException ex) {
                     }
                 }
             }
 
+            if (!nagativeNumbers.isEmpty()) {
+                throw new CalculatorException(nagativeNumbers.toString() + " Error occurred: negative numbers are not accepted.");
+            }
             if (!numbers.isEmpty()) {
                 for (int number : numbers) {
                     result += number;
