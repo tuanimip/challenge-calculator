@@ -10,6 +10,8 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  *
@@ -101,14 +103,28 @@ public class Calculator {
             String numberString = input.substring(indexNewLine + 1, input.length());
 
             if (!numberString.isEmpty()) {
+                String regex;
                 //mutil dimiliter
                 if (dilimiter.contains("[")) {
                     //convert to dimiliter array
+                    Pattern pattern = Pattern.compile("\\[(.*?)\\]");
+                    Matcher matcher = pattern.matcher(dilimiter);
+                    String delimiterStr = "";
+                    String anyDelimiter = "";
+                    while (matcher.find()) {
+                        delimiterStr = delimiterStr + matcher.group(1);
+                        anyDelimiter = matcher.group(1);
+                    }
+                    regex = "[" + delimiterStr + "]+";
+                    numberString = numberString.replaceAll("\n", anyDelimiter);
                 } else {
                     //single dimiliter
+                    regex = "[" + dilimiter + "]+";
                     numberString = numberString.replaceAll("\n", dilimiter);
-                    params = numberString.split("[" + dilimiter + "]+");
+
                 }
+
+                params = numberString.split(regex);
             }
 
             if (params.length > 0) {
