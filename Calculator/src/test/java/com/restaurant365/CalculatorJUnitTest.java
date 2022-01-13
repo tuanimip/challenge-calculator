@@ -17,22 +17,22 @@ import static org.junit.jupiter.api.Assertions.*;
  * @author tuan.phanvan
  */
 public class CalculatorJUnitTest {
-    
+
     public CalculatorJUnitTest() {
     }
-    
+
     @BeforeAll
     public static void setUpClass() {
     }
-    
+
     @AfterAll
     public static void tearDownClass() {
     }
-    
+
     @BeforeEach
     public void setUp() {
     }
-    
+
     @AfterEach
     public void tearDown() {
     }
@@ -40,9 +40,9 @@ public class CalculatorJUnitTest {
     // TODO add test methods here.
     // The methods must be annotated with annotation @Test. For example:
     //
+    //first requirement
     @Test
-    public void calculatorTest() {
-        //first requirement
+    public void firstTest() {
         try {
             //20 will return 20
             assertEquals(20, Calculator.processCalculator("20"));
@@ -62,9 +62,20 @@ public class CalculatorJUnitTest {
 
             //Support a maximum of 2 numbers
             Calculator.processCalculator("1,2,3");
+            fail("Not throw CalculatorException as expected");
         } catch (CalculatorException calExc) {
             //Throw an exception when more than 2 numbers are provided
             assertEquals("Error occurred: maximum of numbers must be 2.", calExc.getMessage());
+        }
+    }
+
+    //second requirement
+    @Test
+    public void secondTest() {
+        try {
+            //1,2,3,4,5,6,7,8,9,10,11,12 will return 78
+            assertEquals(78, Calculator.processCalculator("1,2,3,4,5,6,7,8,9,10,11,12"));
+        } catch (CalculatorException calExc) {
         }
     }
 }

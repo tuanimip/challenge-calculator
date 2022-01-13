@@ -52,16 +52,11 @@ public class Calculator {
 
         int result = 0;
         List<Integer> numbers = new ArrayList<>();
-        int size = 0;
         if (params.length > 0) {
             for (String e : params) {
                 if (!e.isEmpty()) {
                     try {
                         int number = Integer.parseInt(e);
-                        size++;
-                        if (size > 2) {
-                            throw new CalculatorException("Error occurred: maximum of numbers must be 2.");
-                        }
                         numbers.add(number);
                     } catch (NumberFormatException ex) {
                     }
