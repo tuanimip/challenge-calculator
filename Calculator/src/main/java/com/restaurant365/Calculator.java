@@ -4,7 +4,6 @@
  */
 package com.restaurant365;
 
-import com.restaurant365.util.CalculatorException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -19,22 +18,33 @@ public class Calculator {
 
     public static void main(String[] args) throws IOException {
         System.out.print("-------Calculator console application-------\n");
-        System.out.print("Note: type \"exit\" to exit application\n\n");
+        System.out.print("Note: press \"enter\" to input new parameter\n"
+                + "type \"run\" to process calculator\n"
+                + "type \"exit\" to exit application\n\n");
 
         InputStream stream = System.in;
         Scanner scanner = new Scanner(stream);
-        String input;
+        String inputAll = "";
 
+        System.out.println("-------\nInput: ");
         while (true) {
-            System.out.println("-------\nInput: ");
             if (scanner.hasNext()) {
-                input = scanner.next();
+                String input = scanner.next();
                 if (!input.equalsIgnoreCase("exit")) {
-                    try {
-                        int result = processCalculator(input);
+                    if (input.equalsIgnoreCase("run")) {
+//                        try {
+                        if (!inputAll.isEmpty()) {
+                            inputAll = inputAll.substring(0, inputAll.length() - 1);
+                        }
+                        int result = processCalculator(inputAll);
                         System.out.println("Output: " + result);
-                    } catch (CalculatorException calExc) {
-                        System.out.println(calExc.getMessage());
+//                        } catch (CalculatorException calExc) {
+//                            System.out.println(calExc.getMessage());
+//                        }
+                        System.out.println("-------\nInput: ");
+                        inputAll = "";
+                    } else {
+                        inputAll = inputAll + input + "\n";
                     }
 
                 } else {
@@ -47,7 +57,8 @@ public class Calculator {
         scanner.close();
     }
 
-    public static int processCalculator(String input) throws CalculatorException {
+    public static int processCalculator(String input) /*throws CalculatorException*/ {
+        input = input.replaceAll("\n", ",");
         String[] params = input.split(",", -1);
 
         int result = 0;
