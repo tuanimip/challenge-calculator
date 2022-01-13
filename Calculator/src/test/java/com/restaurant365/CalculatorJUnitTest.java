@@ -110,4 +110,18 @@ public class CalculatorJUnitTest {
         } catch (CalculatorException calExc) {
         }
     }
+
+    //sixth requirement
+    @Test
+    public void sixthTest() {
+        try {
+            //#\n2#5 will return 7
+            assertEquals(7, Calculator.processCalculator("//#\n2#5"));
+            //#\n2#5 will return 7
+            assertEquals(102, Calculator.processCalculator("//,\n2,ff,100"));
+            //#\n2#5 will return 7
+            assertEquals(103, Calculator.processCalculator("//$\n2$ff$101"));
+        } catch (CalculatorException calExc) {
+        }
+    }
 }

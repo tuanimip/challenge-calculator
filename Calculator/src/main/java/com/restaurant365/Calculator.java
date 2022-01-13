@@ -18,38 +18,60 @@ import java.util.Scanner;
 public class Calculator {
 
     public static void main(String[] args) throws IOException {
-        System.out.print("-------Calculator console application-------\n");
-        System.out.print("Note: press \"enter\" to input new parameter\n"
+        printMessage("-------Calculator console application-------\n");
+        printMessage("Note: press \"enter\" to input new parameter\n"
                 + "type \"run\" to process calculator\n"
                 + "type \"exit\" to exit application\n\n");
 
         InputStream stream = System.in;
         Scanner scanner = new Scanner(stream);
         String inputAll = "";
+        String inputDilimiter = "";
+        boolean isInputDelimiter = true;
+        List<String> delimiters = new ArrayList<>();
 
-        System.out.println("-------\nInput: ");
+        printFirstMessage();
         while (true) {
             if (scanner.hasNext()) {
                 String input = scanner.next();
-                if (!input.equalsIgnoreCase("exit")) {
-                    if (input.equalsIgnoreCase("run")) {
-                        try {
-                            if (!inputAll.isEmpty()) {
-                                inputAll = inputAll.substring(0, inputAll.length() - 1);
-                            }
-                            int result = processCalculator(inputAll);
-                            System.out.println("Output: " + result);
-                        } catch (CalculatorException calExc) {
-                            System.out.println(calExc.getMessage());
-                        }
-                        System.out.println("-------\nInput: ");
-                        inputAll = "";
-                    } else {
-                        inputAll = inputAll + input + "\n";
-                    }
-
+                if (input.isEmpty() && isInputDelimiter) {
+                    printMessage("please input value: ");
                 } else {
-                    break;
+                    if (!input.equalsIgnoreCase("exit")) {
+                        if (input.equalsIgnoreCase("run")) {
+                            try {
+                                if (!delimiters.isEmpty()) {
+                                    if (delimiters.size() == 1) {
+                                        inputDilimiter = delimiters.get(0);
+                                    }
+                                    inputAll = "//" + inputDilimiter + "\n" + inputAll;
+
+                                    if (!inputAll.isEmpty()) {
+                                        inputAll = inputAll.substring(0, inputAll.length() - 1);
+                                    }
+                                    int result = processCalculator(inputAll);
+                                    printMessage("Output: " + result);
+                                }
+                            } catch (CalculatorException calExc) {
+                                printMessage(calExc.getMessage());
+                            }
+                            printFirstMessage();
+                            inputAll = "";
+                            isInputDelimiter = true;
+                            inputDilimiter = "";
+                            delimiters.clear();
+                        } else if (input.equalsIgnoreCase("end")) {
+                            isInputDelimiter = false;
+                            printMessage("Input numbers: ");
+                        } else if (isInputDelimiter) {
+                            delimiters.add(input);
+                            inputDilimiter = inputDilimiter + "[" + input + "]";
+                        } else {
+                            inputAll = inputAll + input + "\n";
+                        }
+                    } else {
+                        break;
+                    }
                 }
             }
             scanner.nextLine();
@@ -58,34 +80,59 @@ public class Calculator {
         scanner.close();
     }
 
-    public static int processCalculator(String input) throws CalculatorException {
-        input = input.replaceAll("\n", ",");
-        String[] params = input.split(",", -1);
+    public static void printMessage(String message) {
+        System.out.println(message);
+    }
 
+    public static void printFirstMessage() {
+        printMessage("-------\nPlease input the characters as your delimiter (support mutil delimiter,\n"
+                + "press \"Enter\" to input new delimiter). Input \"end\" to end input delimiter:");
+    }
+
+    public static int processCalculator(String input) throws CalculatorException {
         int result = 0;
         List<Integer> numbers = new ArrayList<>();
         List<Integer> nagativeNumbers = new ArrayList<>();
-        if (params.length > 0) {
-            for (String e : params) {
-                if (!e.isEmpty()) {
-                    try {
-                        int number = Integer.parseInt(e);
-                        if (number < 0) {
-                            nagativeNumbers.add(number);
-                        } else if (number <= 1000) {
-                            numbers.add(number);
-                        }
-                    } catch (NumberFormatException ex) {
-                    }
+        String[] params = new String[1];
+        int indexNewLine = input.indexOf("\n");
+
+        if (indexNewLine >= 3) {
+            String dilimiter = input.substring(2, indexNewLine);
+            String numberString = input.substring(indexNewLine + 1, input.length());
+
+            if (!numberString.isEmpty()) {
+                //mutil dimiliter
+                if (dilimiter.contains("[")) {
+                    //convert to dimiliter array
+                } else {
+                    //single dimiliter
+                    numberString = numberString.replaceAll("\n", dilimiter);
+                    params = numberString.split("[" + dilimiter + "]+");
                 }
             }
 
-            if (!nagativeNumbers.isEmpty()) {
-                throw new CalculatorException(nagativeNumbers.toString() + " Error occurred: negative numbers are not accepted.");
-            }
-            if (!numbers.isEmpty()) {
-                for (int number : numbers) {
-                    result += number;
+            if (params.length > 0) {
+                for (String e : params) {
+                    if (!e.isEmpty()) {
+                        try {
+                            int number = Integer.parseInt(e);
+                            if (number < 0) {
+                                nagativeNumbers.add(number);
+                            } else if (number <= 1000) {
+                                numbers.add(number);
+                            }
+                        } catch (NumberFormatException ex) {
+                        }
+                    }
+                }
+
+                if (!nagativeNumbers.isEmpty()) {
+                    throw new CalculatorException(nagativeNumbers.toString() + " Error occurred: negative numbers are not accepted.");
+                }
+                if (!numbers.isEmpty()) {
+                    for (int number : numbers) {
+                        result += number;
+                    }
                 }
             }
         }
