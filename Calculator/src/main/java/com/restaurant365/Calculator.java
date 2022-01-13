@@ -72,7 +72,7 @@ public class Calculator {
                         int number = Integer.parseInt(e);
                         if (number < 0) {
                             nagativeNumbers.add(number);
-                        } else {
+                        } else if (number <= 1000) {
                             numbers.add(number);
                         }
                     } catch (NumberFormatException ex) {

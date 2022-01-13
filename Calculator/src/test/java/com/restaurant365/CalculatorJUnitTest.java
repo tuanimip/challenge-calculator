@@ -100,4 +100,14 @@ public class CalculatorJUnitTest {
             assertEquals("[-2, -9] Error occurred: negative numbers are not accepted.", calExc.getMessage());
         }
     }
+
+    //fifth requirement
+    @Test
+    public void fifthTest() {
+        try {
+            //Make any value greater than 1000 an invalid number e.g. 2,1001,6 will return 8
+            assertEquals(8, Calculator.processCalculator("2,1001,6"));
+        } catch (CalculatorException calExc) {
+        }
+    }
 }
