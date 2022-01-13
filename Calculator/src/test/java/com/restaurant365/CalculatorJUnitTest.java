@@ -138,4 +138,33 @@ public class CalculatorJUnitTest {
         } catch (CalculatorException calExc) {
         }
     }
+
+    //eighth requirement
+    @Test
+    public void eighthTest() {
+        try {
+            //[*][!!][r9r]\n11r9r22*hh*33!!44 will return 110
+            assertEquals(110, Calculator.processCalculator("//[*][!!][r9r]\n11r9r22*hh*33!!44"));
+            //[**&^*]\n11**&^*22**&^*33 will return 66
+            assertEquals(66, Calculator.processCalculator("//[**&^*]\n11**&^*22**&^*33"));
+            //$\n2$ff$101 will return 103
+            assertEquals(103, Calculator.processCalculator("//$\n2$ff$101"));
+
+            assertEquals(8, Calculator.processCalculator("2,1001,6"));
+
+            //1\n2,3 will return 6
+            assertEquals(6, Calculator.processCalculator("1\n2,3"));
+
+            //1,2,3,4,5,6,7,8,9,10,11,12 will return 78
+            assertEquals(78, Calculator.processCalculator("1,2,3,4,5,6,7,8,9,10,11,12"));
+
+            //empty input or missing numbers should be converted to 0
+            assertEquals(0, Calculator.processCalculator(""));
+            assertEquals(0, Calculator.processCalculator("a,b"));
+
+            //invalid numbers should be converted to 0 e.g. 5,tytyt will return 5
+            assertEquals(5, Calculator.processCalculator("5,tytyt"));
+        } catch (CalculatorException calExc) {
+        }
+    }
 }

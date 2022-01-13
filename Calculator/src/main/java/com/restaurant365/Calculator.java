@@ -96,62 +96,62 @@ public class Calculator {
         List<Integer> numbers = new ArrayList<>();
         List<Integer> nagativeNumbers = new ArrayList<>();
         String[] params = new String[1];
-        int indexNewLine = input.indexOf("\n");
+        String regex;
+        if (input.startsWith("//")) {
+            int indexNewLine = input.indexOf("\n");
 
-        if (indexNewLine >= 3) {
-            String dilimiter = input.substring(2, indexNewLine);
-            String numberString = input.substring(indexNewLine + 1, input.length());
+            if (indexNewLine >= 3) {
+                String dilimiter = input.substring(2, indexNewLine);
+                String numberString = input.substring(indexNewLine + 1, input.length());
 
-            if (!numberString.isEmpty()) {
-                String regex;
-                //mutil dimiliter
-                if (dilimiter.contains("[")) {
-                    //convert to dimiliter array
-                    Pattern pattern = Pattern.compile("\\[(.*?)\\]");
-                    Matcher matcher = pattern.matcher(dilimiter);
-                    String delimiterStr = "";
-                    String anyDelimiter = "";
-                    while (matcher.find()) {
-                        delimiterStr = delimiterStr + matcher.group(1);
-                        anyDelimiter = matcher.group(1);
+                if (!numberString.isEmpty()) {
+                    if (dilimiter.contains("[")) {
+                        //mutil dimiliter
+                        Pattern pattern = Pattern.compile("\\[(.*?)\\]");
+                        Matcher matcher = pattern.matcher(dilimiter);
+                        String delimiterStr = "";
+                        while (matcher.find()) {
+                            delimiterStr = delimiterStr + matcher.group(1);
+                        }
+                        regex = "[" + delimiterStr + "\n]+";
+                    } else {
+                        //single dimiliter
+                        regex = "[" + dilimiter + "\n]+";
                     }
-                    regex = "[" + delimiterStr + "]+";
-                    numberString = numberString.replaceAll("\n", anyDelimiter);
-                } else {
-                    //single dimiliter
-                    regex = "[" + dilimiter + "]+";
-                    numberString = numberString.replaceAll("\n", dilimiter);
 
+                    params = numberString.split(regex);
                 }
+            }
+        } else {
+            regex = "[,\n]+";
+            params = input.split(regex);
+        }
 
-                params = numberString.split(regex);
+        if (params.length > 0) {
+            for (String e : params) {
+                if (!e.isEmpty()) {
+                    try {
+                        int number = Integer.parseInt(e);
+                        if (number < 0) {
+                            nagativeNumbers.add(number);
+                        } else if (number <= 1000) {
+                            numbers.add(number);
+                        }
+                    } catch (NumberFormatException ex) {
+                    }
+                }
             }
 
-            if (params.length > 0) {
-                for (String e : params) {
-                    if (!e.isEmpty()) {
-                        try {
-                            int number = Integer.parseInt(e);
-                            if (number < 0) {
-                                nagativeNumbers.add(number);
-                            } else if (number <= 1000) {
-                                numbers.add(number);
-                            }
-                        } catch (NumberFormatException ex) {
-                        }
-                    }
-                }
-
-                if (!nagativeNumbers.isEmpty()) {
-                    throw new CalculatorException(nagativeNumbers.toString() + " Error occurred: negative numbers are not accepted.");
-                }
-                if (!numbers.isEmpty()) {
-                    for (int number : numbers) {
-                        result += number;
-                    }
+            if (!nagativeNumbers.isEmpty()) {
+                throw new CalculatorException(nagativeNumbers.toString() + " Error occurred: negative numbers are not accepted.");
+            }
+            if (!numbers.isEmpty()) {
+                for (int number : numbers) {
+                    result += number;
                 }
             }
         }
+//    }
 
         return result;
     }
